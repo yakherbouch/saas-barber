@@ -1,0 +1,9 @@
+{
+  "name": "saas-barber",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Données de test réalistes pour une marketplace de coiffure (SaaS).",
+  "scripts": {
+    "generate:seed": "node scripts/generate-seed-data.js"
+  }
+}
