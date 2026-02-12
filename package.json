@@ -1,9 +1,19 @@
 {
-  "name": "saas-barber",
-  "version": "0.1.0",
+  "name": "coiffedom-marketplace",
+  "version": "1.0.0",
   "private": true,
-  "description": "Données de test réalistes pour une marketplace de coiffure (SaaS).",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "generate:seed": "node scripts/generate-seed-data.js"
+    "build": "npm run build -w @coiffedom/api && npm run build -w @coiffedom/web",
+    "dev": "concurrently \"npm run dev -w @coiffedom/api\" \"npm run dev -w @coiffedom/web\"",
+    "lint": "npm run lint -w @coiffedom/api && npm run lint -w @coiffedom/web",
+    "seed:marketplace": "node scripts/generate-french-marketplace-seed.js",
+    "test": "npm run test -w @coiffedom/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }

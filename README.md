@@ -1,29 +1,64 @@
-# SaaS Barber - Dataset & Blueprint
+# CoiffeDom - Commercial-Grade French Marketplace
 
-Ce dépôt initialise un jeu de données réaliste et réutilisable pour une marketplace de coiffure (web + mobile), avec un objectif de crédibilité “production ready”.
+CoiffeDom is a startup-grade SaaS marketplace connecting clients with mobile hairdressers (at-home services), designed for French-speaking markets (France, Belgium, Switzerland).
 
-## Ce qui est inclus
+## Product Scope
 
-- 50 profils de coiffeurs complets (photo, galerie, spécialités, services, badges, disponibilité, vérification).
-- 300+ avis clients réalistes (notes variées, commentaires, photos optionnelles, réponse du coiffeur).
-- Des réservations passées (statuts variés, paiements, commissions).
+- **Roles:** Client, Hairdresser, Admin
+- **Authentication:** Signup/Login, JWT access/refresh, bcrypt hashing, role-based route protection
+- **Hairdresser profiles:** premium profile structure, specialties, location, availability, pricing, trust badges
+- **Bookings:** full lifecycle (`EN_ATTENTE`, `CONFIRMEE`, `TERMINEE`, `ANNULEE`)
+- **Reviews:** post-booking social proof structure
+- **Admin:** metrics endpoint and moderation-ready architecture
+- **Security baseline:** Helmet, CORS, rate limiting, DTO validation with Zod
 
-## Génération des données
+## Monorepo Structure
 
-Les données sont générées de manière déterministe pour rester reproductibles.
+- `apps/api` → Express + TypeScript API
+- `apps/web` → Next.js + Tailwind premium French UI shell
+- `packages/shared` → shared constants/types
+- `prisma` → PostgreSQL schema
+- `data/seed-data.json` → realistic French seed fixture
+- `scripts/generate-french-marketplace-seed.js` → deterministic seed generator
+- `infra/docker-compose.yml` → local orchestration
+
+## Local Setup
 
 ```bash
-npm run generate:seed
+npm install
+cp .env.example .env
+npm run seed:marketplace
+npm run dev
 ```
 
-Cela génère `data/seed-data.json` avec les sections suivantes :
+- API: `http://localhost:4000/api`
+- Web: `http://localhost:3000`
 
-- `stylists`
-- `reviews`
-- `bookings`
+## API Endpoints (French-facing)
 
-## Prochaines étapes possibles
+- `POST /api/auth/inscription`
+- `POST /api/auth/connexion`
+- `POST /api/auth/mot-de-passe-oublie`
+- `GET /api/coiffeurs`
+- `GET /api/avis`
+- `GET /api/admin/metrics` (ADMIN only)
 
-- Connecter ces données à un backend (NestJS + PostgreSQL + Prisma).
-- Exposer une API publique pour les clients mobile/web.
-- Ajouter un onboarding et une authentification complète.
+## Seed Data Requirements Covered
+
+- 50 hairdressers (French-speaking dataset)
+- 300 reviews (French tone, varied ratings)
+- 240 historical bookings
+- EUR pricing and locale metadata
+
+## Deployment
+
+Docker assets are provided under `infra/`.
+Use `infra/docker-compose.yml` for local production-like startup and migrate to managed PostgreSQL + cloud hosting for production.
+
+## Notes for Production Hardening
+
+- Replace in-memory storage with Prisma repositories.
+- Add Stripe payment intents + webhooks + invoice service.
+- Add email provider (verification + password reset).
+- Implement refresh-token rotation and revocation persistence.
+- Add observability (OpenTelemetry, structured logs, audit trails).
